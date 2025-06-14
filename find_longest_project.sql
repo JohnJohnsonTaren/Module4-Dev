@@ -6,10 +6,11 @@
 
 SELECT DATEDIFF(
     MONTH, p.START_DATE, p.FINISH_DATE
-    ) AS Project_Duration,
-       -- p.ID AS Project_ID, -- коментуємо, якщо не потрібно виводити ID
-       c.NAME AS Client_Name
+    ) Project_Duration, c.NAME Client_Name
 FROM Project p
 JOIN Client c ON p.CLIENT_ID = c.ID
-ORDER BY Project_Duration DESC
-LIMIT 3;
+WHERE DATEDIFF(MONTH, p.START_DATE, p.FINISH_DATE) = (
+    SELECT MAX(
+        DATEDIFF(MONTH, START_DATE, FINISH_DATE)
+        ) 
+        FROM Project);

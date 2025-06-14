@@ -7,10 +7,15 @@
 -- AS - псевдонім для стовпця, який виводить назву клієнта 
 
 SELECT
-    c.NAME AS Client_Name,
-    COUNT(p.ID) AS Project_Count
+    c.NAME Client_Name,
+    COUNT(p.ID) Project_Count
 FROM Client c
 JOIN Project p ON c.ID = p.CLIENT_ID
 GROUP BY c.ID, c.NAME
-ORDER BY Project_Count DESC
-LIMIT 3; 
+HAVING COUNT(p.ID) = (
+    SELECT MAX(Project_Counts.Count)
+    FROM (
+        SELECT COUNT(ID) Count 
+        FROM Project 
+        GROUP BY CLIENT_ID
+        ) Project_Counts);
